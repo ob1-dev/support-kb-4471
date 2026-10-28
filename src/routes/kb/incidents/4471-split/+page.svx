@@ -33,9 +33,11 @@ The queued parser fix will not close #4471. Each problem below has its own ticke
 
 <ProblemTable ticket={4471} {tickets} />
 
-Counts are built from `reports-4471.json` at render time, one report per id (the export repeats some rows).
-A report belongs to a problem by its tenant and the way it came in, as `causes.ts` decides, not by the
-intake tag: intake guesses from the reporter's browser, and it is wrong in both directions.
+Counts are built from `reports-4471.json` at render time with the desk's own view (`causes.ts`, as exported):
+one report per id (the export repeats some rows), each counted once, under its cause by tenant. A report
+belongs to a cause by its tenant and the way it came in, not by the intake tag: intake guesses from the
+reporter's browser, and it is wrong in both directions. The one-day moves stay counted under `parser`,
+where the desk files them, and are footnoted there.
 
 ### `parser`: day and month swapped by the shared parser
 
@@ -51,7 +53,8 @@ The #4471 page already flags this row as "not this ticket", but it had no ticket
 
 ### `one-day-move`: a day off, not a swap
 
-The desk noted these as one-day moves (`desk-notes.json`) and still counted them under `parser`.
+The desk noted these as one-day moves (`desk-notes.json`) and files them under `parser` by tenant, where
+they are counted. They are still a different problem, so they have their own ticket.
 Tuesday 12 May shows as Monday 11 May; a client in Lisbon gets Tuesday and one in Toronto gets Monday
 for the same meeting; an invite arrives before the booking. That points at time-zone handling, not date
 order. One reporter says they have stopped reporting these, so the real number is likely higher.
