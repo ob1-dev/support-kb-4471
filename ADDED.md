@@ -14,3 +14,5 @@ Base: the support desk's kb export (`support-kb/`, exported 2026-10-04), unchang
 Tickets, one per problem: [#1 parser](https://github.com/ob1-dev/support-kb-4471/issues/1) · [#2 hint](https://github.com/ob1-dev/support-kb-4471/issues/2) · [#3 one-day move](https://github.com/ob1-dev/support-kb-4471/issues/3).
 
 Build: `npm ci && npx vite build`.
+
+Tickets #1, #2 and #3 are closed by the commit that adds this line: the kb page is their write-up.
