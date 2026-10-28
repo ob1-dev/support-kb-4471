@@ -1,0 +1,66 @@
+---
+layout: runbook
+title: '#4471 is not one issue: what the merged reports show'
+owner: Chris O'Brien
+status: open
+reviewed: 2026-10-28
+signature: "Chris O'Brien"
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/ob1-dev/support-kb-4471/issues';
+  const tickets = {
+    parser: { href: `${repo}/1`, label: 'ob1-dev/support-kb-4471#1' },
+    hint: { href: `${repo}/2`, label: 'ob1-dev/support-kb-4471#2' },
+    'one-day-move': { href: `${repo}/3`, label: 'ob1-dev/support-kb-4471#3' },
+  };
+</script>
+
+[#4471](/kb/incidents/4471) is marked **known**: one issue, one fix queued. The reports merged into it
+say otherwise. They were merged on subject line alone ([decision 0001](/kb/decisions/0001-dedupe-by-subject)),
+and "wrong day on the invite" is what every date bug looks like from the outside. Read by cause, the
+reports hold separate problems, and only one of them is the parser fix that is queued.
+
+<Callout kind="warn">
+The queued parser fix will not close #4471. Each problem below has its own ticket, with how many reports it covers.
+</Callout>
+
+## The problems
+
+<ProblemTable ticket={4471} {tickets} />
+
+Counts are built from `reports-4471.json` at render time, one report per id (the export repeats some rows).
+A report belongs to a problem by its tenant and the way it came in, as `causes.ts` decides, not by the
+intake tag: intake guesses from the reporter's browser, and it is wrong in both directions.
+
+### `parser`: day and month swapped by the shared parser
+
+The shared parser reads every date month first. Every tenant on file writes the day first, so a booking
+on D/M lands on M/D. In every one of these reports that names both dates, the second is the first with day and month
+swapped. The swapped day is always 12 or lower, so the wrong date is still a valid date and nothing errors.
+
+### `hint`: the booking-v3 form tells people to type month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field and then reads the date the tenant's way, day first.
+People type what the hint says. The swap happens in the form, so the parser fix does not touch it.
+The #4471 page already flags this row as "not this ticket", but it had no ticket of its own.
+
+### `one-day-move`: a day off, not a swap
+
+The desk noted these as one-day moves (`desk-notes.json`) and still counted them under `parser`.
+Tuesday 12 May shows as Monday 11 May; a client in Lisbon gets Tuesday and one in Toronto gets Monday
+for the same meeting; an invite arrives before the booking. That points at time-zone handling, not date
+order. One reporter says they have stopped reporting these, so the real number is likely higher.
+
+## What to change on the desk
+
+- Do not close #4471 on the parser fix. Close each ticket on its own fix.
+- When intake tag and tenant disagree, trust the tenant: the cause depends on the tenant's locale and form.
+- Matching on subject merges different bugs that look the same to the reporter. Before marking a big
+  ticket known, split it by cause.
+
+<RenderStamp {signature} />
