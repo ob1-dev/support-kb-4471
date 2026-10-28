@@ -14,7 +14,7 @@ signature: "Chris O'Brien"
 
   const repo = 'https://github.com/ob1-dev/support-kb-4471/issues';
   const tickets = {
-    parser: { href: `${repo}/4`, label: 'ob1-dev/support-kb-4471#4' },
+    parser: { href: `${repo}/1`, label: 'ob1-dev/support-kb-4471#1' },
     hint: { href: `${repo}/2`, label: 'ob1-dev/support-kb-4471#2' },
     'one-day-move': { href: `${repo}/3`, label: 'ob1-dev/support-kb-4471#3' },
   };
